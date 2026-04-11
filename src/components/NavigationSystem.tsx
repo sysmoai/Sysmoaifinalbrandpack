@@ -106,11 +106,13 @@ interface NavigationSystemProps {
   onNavigate: (sectionId: string) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  onExportAllAssets?: () => Promise<void>;
 }
 
-export function NavigationSystem({ currentSection, onNavigate, isCollapsed, onToggleCollapse }: NavigationSystemProps) {
+export function NavigationSystem({ currentSection, onNavigate, isCollapsed, onToggleCollapse, onExportAllAssets }: NavigationSystemProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [exportState, setExportState] = useState<'idle' | 'loading' | 'done'>('idle');
   const activeRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   
@@ -325,9 +327,42 @@ export function NavigationSystem({ currentSection, onNavigate, isCollapsed, onTo
 
           {/* ── Footer ── */}
           <div className="px-4 py-3 border-t border-white/[0.06]">
-            <button className="w-full flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg px-4 py-2.5 transition-colors">
-              <Download size={13} />
-              <span style={{ fontSize: 12, fontWeight: 600 }}>Export All Assets</span>
+            <button
+              className="w-full flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg px-4 py-2.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
+              onClick={async () => {
+                if (onExportAllAssets && exportState === 'idle') {
+                  setExportState('loading');
+                  try {
+                    await onExportAllAssets();
+                    setExportState('done');
+                    setTimeout(() => setExportState('idle'), 2000);
+                  } catch (error) {
+                    console.error('Export failed:', error);
+                    setExportState('idle');
+                  }
+                }
+              }}
+              disabled={exportState === 'loading'}
+            >
+              {exportState === 'loading' ? (
+                <>
+                  <svg className="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.928l3-2.647z"></path>
+                  </svg>
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>Exporting...</span>
+                </>
+              ) : exportState === 'done' ? (
+                <>
+                  <Check size={13} />
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>✓ Exported!</span>
+                </>
+              ) : (
+                <>
+                  <Download size={13} />
+                  <span style={{ fontSize: 12, fontWeight: 600 }}>Export All Assets</span>
+                </>
+              )}
             </button>
           </div>
         </div>
