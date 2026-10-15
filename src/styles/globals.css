@@ -2,29 +2,29 @@
 
 :root {
   --font-size: 16px;
-  --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
-  --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.0058 264.53);
-  --secondary-foreground: #030213;
-  --muted: #ececf0;
-  --muted-foreground: #717182;
-  --accent: #e9ebef;
-  --accent-foreground: #030213;
-  --destructive: #d4183d;
+  --background: #08090D;
+  --foreground: rgba(255, 255, 255, 0.92);
+  --card: #111218;
+  --card-foreground: rgba(255, 255, 255, 0.92);
+  --popover: #111218;
+  --popover-foreground: rgba(255, 255, 255, 0.92);
+  --primary: #2563EB;
+  --primary-foreground: #FFFFFF;
+  --secondary: #16171F;
+  --secondary-foreground: rgba(255, 255, 255, 0.92);
+  --muted: #16171F;
+  --muted-foreground: rgba(255, 255, 255, 0.68);
+  --accent: #0D1B3E;
+  --accent-foreground: #60A5FA;
+  --destructive: #EF4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
+  --border: rgba(255, 255, 255, 0.1);
   --input: transparent;
   --input-background: #f3f3f5;
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
+  --ring: #60A5FA;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -39,6 +39,23 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* SYSmoAI brand tokens — mirror of src/app/brand/tokens.ts */
+  --brand-blue-950: #0D1B3E;
+  --brand-blue-900: #1E3A8A;
+  --brand-blue-800: #1E40AF;
+  --brand-blue-600: #2563EB;
+  --brand-blue-500: #3B82F6;
+  --brand-blue-400: #60A5FA;
+  --brand-slate-400: #94A3B8;
+  --brand-ink: #0A0F1E;
+  --brand-bg: #08090D;
+  --brand-surface: #111218;
+  --brand-success: #10B981;
+  --brand-warning: #F59E0B;
+  --brand-error: #EF4444;
+  --font-brand: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
+  --font-brand-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
 }
 
 .dark {
@@ -79,6 +96,16 @@
 }
 
 @theme inline {
+  --color-brand-950: var(--brand-blue-950);
+  --color-brand-900: var(--brand-blue-900);
+  --color-brand-800: var(--brand-blue-800);
+  --color-brand-600: var(--brand-blue-600);
+  --color-brand-500: var(--brand-blue-500);
+  --color-brand-400: var(--brand-blue-400);
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-surface: var(--brand-surface);
+  --font-brand: var(--font-brand);
+  --font-brand-mono: var(--font-brand-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -182,4 +209,49 @@
 
 html {
   font-size: var(--font-size);
+}
+
+body {
+  font-family: var(--font-brand);
+}
+
+/* — Accessibility hardening — */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -64px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font: 600 14px/1 var(--font-brand);
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Guard: off-canvas drawers must never widen the layout viewport */
+html,
+body {
+  overflow-x: clip;
 }
